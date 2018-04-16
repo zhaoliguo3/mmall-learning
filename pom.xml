@@ -244,6 +244,8 @@
             <artifactId>jedis</artifactId>
             <version>2.9.0</version>
         </dependency>
+
+
     </dependencies>
 
 
@@ -273,6 +275,7 @@
                     </compilerArguments>
                 </configuration>
             </plugin>
+
         </plugins>
 
     </build>
