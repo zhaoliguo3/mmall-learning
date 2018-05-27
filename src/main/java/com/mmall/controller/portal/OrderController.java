@@ -121,33 +121,39 @@ public class OrderController {
     @RequestMapping("alipay_callback.do")
     @ResponseBody
     public Object alipayCallback(HttpServletRequest request){
+                                                                                        logger.info("开始回调");
         Map<String,String> params = Maps.newHashMap();
 
-        Map<String, String[]> requestParams = request.getParameterMap();
-        for (Iterator iter = requestParams.keySet().iterator();iter.hasNext();){
-            String name = (String) iter.next();
-            String[] values = requestParams.get(name);
+        Map requestParams = request.getParameterMap();
+        for(Iterator iter = requestParams.keySet().iterator();iter.hasNext();){
+            String name = (String)iter.next();
+            String[] values = (String[]) requestParams.get(name);
             String valueStr = "";
-            for (int i = 0; i < values.length; i++) {
-                valueStr = (i == values.length-1)?valueStr+values[i]:valueStr+values[i]+",";
+            for(int i = 0 ; i <values.length;i++){
+
+                valueStr = (i == values.length -1)?valueStr + values[i]:valueStr + values[i]+",";
             }
             params.put(name,valueStr);
         }
         logger.info("支付宝回调,sign:{},trade_status:{},参数:{}",params.get("sign"),params.get("trade_status"),params.toString());
 
+        //非常重要,验证回调的正确性,是不是支付宝发的.并且呢还要避免重复通知.
+
         params.remove("sign_type");
         try {
-            boolean alipayRSACheckedV2 = AlipaySignature.rsaCheckV2(params, Configs.getPublicKey(), "utf-8", Configs.getSignType());
-            if (!alipayRSACheckedV2){
-                return ServerResponse.createByErrorMessage("非法请求，验证不通过");
+            boolean alipayRSACheckedV2 = AlipaySignature.rsaCheckV2(params, Configs.getAlipayPublicKey(),"utf-8",Configs.getSignType());
+                                                                                                         logger.info("验证结果#{}",alipayRSACheckedV2);
+            if(!alipayRSACheckedV2){
+                return ServerResponse.createByErrorMessage("非法请求,验证不通过");
             }
         } catch (AlipayApiException e) {
             logger.error("支付宝验证回调异常",e);
         }
+                                                                      logger.info("验证通过");
         //todo 验证各种数据
 
         ServerResponse serverResponse = iOrderService.alipayCallback(params);
-        if (serverResponse.isSuccess()){
+        if(serverResponse.isSuccess()){
             return Const.AlipayCallback.RESPONSE_SUCCESS;
         }
         return Const.AlipayCallback.RESPONSE_FAILED;

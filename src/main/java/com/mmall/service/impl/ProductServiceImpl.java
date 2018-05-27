@@ -193,6 +193,7 @@ public class ProductServiceImpl implements IProductService {
         List<Integer> categoryIdList = new ArrayList<Integer>();
         if (categoryId != null) {
             Category category = categoryMapper.selectByPrimaryKey(categoryId);
+
             if (category == null && StringUtils.isBlank(keyword)) {
                 PageHelper.startPage(pageNum,pageSize);
                 List<ProductListVo> productListVoList = Lists.newArrayList();
@@ -215,6 +216,7 @@ public class ProductServiceImpl implements IProductService {
             }
         }
         List<Product> productList = productMapper.selectByNameAndCategoryIds(StringUtils.isBlank(keyword)?null:keyword, categoryIdList.size()==0?null:categoryIdList);
+
         List<ProductListVo> productListVoList = Lists.newArrayList();
         for (Product product : productList) {
             ProductListVo productListVo = assembleProductListVo(product);

@@ -98,8 +98,8 @@ public class UserController {
         if (user == null) {
             return ServerResponse.createByErrorMessage("用户未登录");
         }
-        System.out.println(passwordOld);
-        System.out.println(passwordNew);
+//        System.out.println(passwordOld);
+//        System.out.println(passwordNew);
         return iUserService.resetPassword(passwordOld,passwordNew,user);
     }
 

@@ -24,8 +24,8 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public ServerResponse<User> login(String username, String password) {
-        System.out.println(username);
-        System.out.println(password);
+//        System.out.println(username);
+//        System.out.println(password);
         int resultCount = userMapper.checkUsername(username);
         if (resultCount == 0){
             return ServerResponse.createByErrorMessage("用户名不存在");
@@ -33,7 +33,7 @@ public class UserServiceImpl implements IUserService {
 
         //密码登录MD5
         String md5Password = MD5Util.MD5EncodeUtf8(password);
-        System.out.println(md5Password);
+//        System.out.println(md5Password);
         User user = userMapper.selectLogin(username,md5Password);
         if (user == null) {
             return ServerResponse.createByErrorMessage("密码不正确");
@@ -142,19 +142,15 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ServerResponse<String> resetPassword(String passwordOld, String passwordNew, User user) {
 
-        System.out.println("11111");
+//        System.out.println(passwordOld);
+//
+//        System.out.println(passwordNew);
 
-        System.out.println(passwordOld);
-
-        System.out.println(passwordNew);
-
-        System.out.println("111111111111111"+MD5Util.MD5EncodeUtf8(passwordOld));
 
         //防止横向越权，校验旧密码一定是这个用户的
         int resultCount = userMapper.checkPassword(MD5Util.MD5EncodeUtf8(passwordOld), user.getId());
 
 
-        System.out.println("22222222222222"+resultCount);
 
         if (resultCount == 0){
             return ServerResponse.createByErrorMessage("旧密码错误");
@@ -197,7 +193,7 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createByErrorMessage("未查到该用户信息");
         }
         user.setPassword(StringUtils.EMPTY);
-        System.out.println(user);
+      //  System.out.println(user);
         return ServerResponse.createBySuccess(user);
     }
 

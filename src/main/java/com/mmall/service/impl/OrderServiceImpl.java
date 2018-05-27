@@ -370,7 +370,9 @@ public class OrderServiceImpl implements IOrderService {
         return ServerResponse.createBySuccess(orderItemList);
     }
 
-
+    public static void main(String[] args) {
+        System.out.println(PropertiesUtil.getProperty("alipay.callback.url"));
+    }
 
     //支付相关
     @Override
